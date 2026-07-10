@@ -1,0 +1,8 @@
+Images processed (with preds & heatmaps): 30
+Skipped (no preds): 709
+Mean score@Top-1%: 0.825326
+Mean score@Top-5%: 0.825326
+Mean score@Top-10%: 0.825326
+Mean score@Top-50%: 0.825326
+Mean score@Top-100%: 0.825325
+Mean AUC_topK: 0.817073

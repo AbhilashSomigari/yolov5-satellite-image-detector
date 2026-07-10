@@ -1,0 +1,7 @@
+N_images	998
+mean_score_top1p	0.849716
+mean_score_top5p	0.855394
+mean_score_top10p	0.857238
+mean_score_top50p	0.802815
+mean_score_top100p	0.629603
+mean_AUC_topK	0.728201
