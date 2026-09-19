@@ -5,3 +5,22 @@
 *.pth
 *.pt
 yolov5s.torchscript
+
+# OS cruft
+.DS_Store
+
+# Generated XAI artifacts (heatmaps, overlays, per-run outputs) — reproducible via
+# grad_cam.py / eigen_cam.py / cap.py / batch_infer.py, not source material.
+data/gradcam/
+data/gradcam2/
+data/grad_pixelvalues/
+data/eigencam/
+data/eigencam_values/
+data/ig_numpy/
+data/outputs/
+data/pred_boxes/
+data/qmetric_out/
+
+# Experiment result dumps — reproducible via q_metric.py / gen_metric.py
+out_metric/
+results/
