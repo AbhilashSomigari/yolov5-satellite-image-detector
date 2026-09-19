@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # --- YOLOv5 batch infer + save + metrics (YOLO labels) ---
+# Run from the repo root: python -u xai/batch_infer.py
 from pathlib import Path
 import sys
 import os
@@ -19,6 +20,12 @@ try:
 except Exception:
     pass
 
+# Make the repo root importable (models/, utils/)
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[1]  # repo root (xai/ -> root)
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))
+
 from models.common import DetectMultiBackend
 from utils.general import non_max_suppression, scale_boxes, check_img_size
 from utils.torch_utils import select_device
@@ -26,16 +33,15 @@ from utils.augmentations import letterbox
 from utils.plots import Annotator, colors
 
 # =====================
-# CONFIGURE THESE
+# CONFIGURE THESE (all relative to the repo root; override with env vars if needed)
 # =====================
-HOME = Path.home()
-REPO_ROOT = HOME / "Downloads" / "YOLOv5_Detector" / "yolov5"  # adjust if needed
+REPO_ROOT = ROOT
 
-WEIGHTS         = "/Users/abhilashreddysomigari/Downloads/YOLOv5_Detector/weights.pt"
-IMAGES_DIR      = "/Users/abhilashreddysomigari/Downloads/YOLOv5_Detector/data/images"
-OUTPUTS_DIR     = "/Users/abhilashreddysomigari/Downloads/YOLOv5_Detector/data/outputs"       # annotated images root
-PRED_BOXES_DIR  = "/Users/abhilashreddysomigari/Downloads/YOLOv5_Detector/data/pred_boxes"    # prediction .txt root (YOLO format)
-LABELS_DIR      = "/Users/abhilashreddysomigari/Downloads/YOLOv5_Detector/data/labels"        # GT labels (YOLO txt) for metrics; set None to skip
+WEIGHTS         = str(REPO_ROOT / "weights.pt")
+IMAGES_DIR      = str(REPO_ROOT / "data" / "images")
+OUTPUTS_DIR     = str(REPO_ROOT / "data" / "outputs")       # annotated images root
+PRED_BOXES_DIR  = str(REPO_ROOT / "data" / "pred_boxes")    # prediction .txt root (YOLO format)
+LABELS_DIR      = str(REPO_ROOT / "data" / "labels")        # GT labels (YOLO txt) for metrics; set None to skip
 
 DEVICE      = ""            # ''(auto) | 'mps' | 'cpu'
 IMG_SIZE    = (1024, 1024)  # (w, h)

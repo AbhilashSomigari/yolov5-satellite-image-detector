@@ -30,8 +30,8 @@ Outputs:
   - CSV with per-image scores at each K and AUC
   - Printed dataset means
 
-Run:
-  python3 q_metric.py \
+Run (from the repo root):
+  python3 xai/metrics/q_metric.py \
     --heatmaps_dir "data/gradcam" \
     --masks_dir    "data/grad_pixelvalues" \
     --gt_boxes     "data/labels" \

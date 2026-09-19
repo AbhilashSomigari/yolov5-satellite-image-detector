@@ -9,11 +9,10 @@ YOLOv5 batch inference with:
 macOS + VS Code notes:
 - Works on CPU or Apple Silicon (MPS) automatically.
 - No CUDA or env vars required on Mac.
-- Run from the yolov5 folder:
+- Run from the repo root:
 
-  cd /home/WVU-AD/as00391/Downloads/YOLOv5_Detector/yolov5
-  source ../venv/bin/activate
-  python -u batch_infer_eigencam_mac.py
+  source venv/bin/activate
+  python -u xai/cams/eigen_cam.py
 """
 
 from pathlib import Path
@@ -23,7 +22,12 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
-# YOLOv5 local imports (assume we are inside the yolov5 folder)
+# Make the repo root importable (models/, utils/)
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[2]  # repo root (xai/cams/ -> xai/ -> root)
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))
+
 from models.common import DetectMultiBackend
 from utils.general import non_max_suppression, scale_boxes, check_img_size
 from utils.torch_utils import select_device

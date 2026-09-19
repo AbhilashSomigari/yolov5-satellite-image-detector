@@ -28,6 +28,10 @@ Usage - formats:
                                  yolov5s_paddle_model       # PaddlePaddle
 """
 
+# NOTE: archived experiment config (run "exp35", full-resolution satellite tiles @2048px).
+# weights/data below point at another machine's filesystem and are kept only as a record
+# of that run's settings — pass --weights/--source/--data to reuse this script elsewhere.
+
 import argparse
 import os
 import platform
@@ -37,7 +41,7 @@ from pathlib import Path
 import torch
 
 FILE = Path(__file__).resolve()
-ROOT = FILE.parents[0]  # YOLOv5 root directory
+ROOT = FILE.parents[1]  # repo root (experiments/ -> root)
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative

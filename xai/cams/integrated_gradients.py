@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-yolov5_ig_strict.py — YOLOv5 + Captum Integrated Gradients (STRICT, VERBOSE)
+xai/cams/integrated_gradients.py — YOLOv5 + Captum Integrated Gradients (STRICT, VERBOSE)
 
 Key features:
   • Absolute paths + up-front write permission test (text + PNG).
@@ -10,8 +10,8 @@ Key features:
   • Optional debug: save resized input fed to model.
   • PNG save with OpenCV -> PIL fallback (verified).
 
-Run (example):
-  python -u yolov5_ig_strict.py \
+Run (from the repo root):
+  python -u xai/cams/integrated_gradients.py \
     --weights yolov5s.pt \
     --images data/images \
     --out_overlays data/ig_overlays \
@@ -42,7 +42,13 @@ try:
 except Exception:
     _HAS_PIL = False
 
-# YOLOv5 internals (assumes this file is run inside a YOLOv5 clone or PYTHONPATH set)
+# Make the repo root importable (models/, utils/)
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[2]  # repo root (xai/cams/ -> xai/ -> root)
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))
+
+# YOLOv5 internals
 from models.common import DetectMultiBackend
 from utils.torch_utils import select_device
 from utils.augmentations import letterbox

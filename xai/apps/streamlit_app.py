@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Streamlit UI — YOLOv5 + Grad-CAM + EigenCAM + F_Norm (Mac/MPS-friendly)
+xai/apps/streamlit_app.py — YOLOv5 + Grad-CAM + EigenCAM + F_Norm (Mac/MPS-friendly)
 
-- Uses the SAME Grad-CAM logic as batch_infer_gradcam_mac_fix.py:
+- Uses the SAME Grad-CAM logic as xai/cams/grad_cam.py:
     * DetectMultiBackend for YOLO
     * inner_model = model.model for CAM
     * ClassScoreTarget on raw YOLO outputs (bs, N, 5+nc)
@@ -14,20 +14,8 @@ Streamlit UI — YOLOv5 + Grad-CAM + EigenCAM + F_Norm (Mac/MPS-friendly)
     * F_Norm metrics (raw ratio, area-corrected ratio, F_norm in [0,1])
       for both Grad-CAM and EigenCAM.
 
-Folder layout:
-
-YOLOv5_Detector/
-├── app.py
-├── weights/
-│   └── weights.pt
-└── yolov5/
-    ├── models/
-    ├── utils/
-    └── ...
-
-Run:
-    cd ~/Downloads/YOLOv5_Detector
-    streamlit run app.py
+Run (from the repo root):
+    streamlit run xai/apps/streamlit_app.py
 """
 
 import os
@@ -41,11 +29,11 @@ import torch
 from PIL import Image
 from torch import nn
 
-# ==== YOLOv5 imports ====
-ROOT = Path(__file__).resolve().parent
-YOLO_ROOT = ROOT / "yolov5"
-if str(YOLO_ROOT) not in sys.path:
-    sys.path.append(str(YOLO_ROOT))
+# ==== Make the repo root importable (models/, utils/) ====
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[2]  # repo root (xai/apps/ -> xai/ -> root)
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))
 
 from models.common import DetectMultiBackend
 from utils.general import non_max_suppression, scale_boxes, check_img_size

@@ -1,16 +1,26 @@
 # --- Imports and Setup ---
+# xai/apps/gradio_app.py — run from the repo root: python xai/apps/gradio_app.py
+import sys
+from pathlib import Path
+
 import torch, cv2, numpy as np
 import gradio as gr
 from pytorch_grad_cam import GradCAM, EigenCAM
 from pytorch_grad_cam.utils.model_targets import BaseCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
 
-# Import YOLOv5 DetectMultiBackend and utilities (ensure YOLOv5 repository is in PYTHONPATH)
-from yolov5.models.common import DetectMultiBackend
-from yolov5.utils.general import non_max_suppression, scale_coords
+# Make the repo root importable (models/, utils/)
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[2]  # repo root (xai/apps/ -> xai/ -> root)
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))
+
+# Import YOLOv5 DetectMultiBackend and utilities
+from models.common import DetectMultiBackend
+from utils.general import non_max_suppression, scale_boxes
 try:
     # YOLOv5 letterbox (resize with padding) function
-    from yolov5.utils.datasets import letterbox
+    from utils.augmentations import letterbox
 except ImportError:
     # Define letterbox manually if not available
     def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleFill=False, scaleup=True, stride=32):
@@ -109,7 +119,7 @@ def process_image(image):
     # If there are detections, draw them and prepare Grad-CAM target
     if det is not None and len(det):
         # Rescale coordinates from padded image back to original image size
-        det[:, :4] = scale_coords(img_resized.shape[:2], det[:, :4], (orig_h, orig_w)).round()
+        det[:, :4] = scale_boxes(img_resized.shape[:2], det[:, :4], (orig_h, orig_w)).round()
         # Draw bounding boxes and labels on detection image
         for *xyxy, conf, cls in det:
             x1, y1, x2, y2 = map(int, xyxy)

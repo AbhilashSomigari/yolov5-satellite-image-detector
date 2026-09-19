@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """
-batch_infer_gradcam_mac_fix.py — YOLOv5 + class-targeted Grad-CAM overlays (no EigenCAM)
+xai/cams/grad_cam.py — YOLOv5 + class-targeted Grad-CAM overlays (no EigenCAM)
 
 Adds:
   • Saves PNG overlays under OUTPUTS_DIR/overlays with the SAME basename as the input image
   • Saves raw combined CAM .npy under OUTPUTS_DIR/numpy with the SAME basename as the input image
   • Preserves the relative subfolder structure of IMAGES_DIR
 
-Run:
-  cd ~/Downloads/YOLOv5_Detector/yolov5
-  source ../venv/bin/activate
-  python -u batch_infer_gradcam_mac_fix.py
+Run (from the repo root):
+  source venv/bin/activate
+  python -u xai/cams/grad_cam.py
 """
 
 from pathlib import Path
@@ -19,6 +18,12 @@ import cv2
 import numpy as np
 import torch
 from tqdm import tqdm
+
+# ==== Make the repo root importable (models/, utils/) ====
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[2]  # repo root (xai/cams/ -> xai/ -> root)
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))
 
 # ==== YOLOv5 imports ====
 from models.common import DetectMultiBackend
@@ -31,7 +36,7 @@ from utils.plots import Annotator, colors
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
 
-print("[BOOT] batch_infer_gradcam_mac_fix.py (Grad-CAM only)")
+print("[BOOT] xai/cams/grad_cam.py (Grad-CAM only)")
 print(f"[VERSIONS] python={sys.version.split()[0]} torch={torch.__version__} cv2={cv2.__version__}")
 
 # ==== CONFIG (edit for your Mac user) ====

@@ -4,8 +4,8 @@
 Q-metric for arbitrary heatmaps (Grad-CAM, EigenCAM, IG, etc.)
 Now includes tqdm progress bar.
 
-Usage:
-python qmetric_any_heatmap_monotone_topk.py \
+Usage (from the repo root):
+python xai/metrics/gen_metric.py \
   --images_dir data/images \
   --pred_dir data/pred_boxes \
   --heatmaps_dir data/heatmaps \

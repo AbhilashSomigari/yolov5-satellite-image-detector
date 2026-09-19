@@ -1,0 +1,6 @@
+# Extra dependencies for the explainability (XAI) pipeline under xai/.
+# Install with: pip install -r requirements.txt -r xai/requirements-xai.txt
+pytorch-grad-cam>=1.4.8   # Grad-CAM / EigenCAM (xai/cams/*.py, xai/apps/*.py)
+captum>=0.7.0             # Integrated Gradients (xai/cams/integrated_gradients.py)
+streamlit>=1.28.0         # xai/apps/streamlit_app.py
+gradio>=4.0.0             # xai/apps/gradio_app.py
