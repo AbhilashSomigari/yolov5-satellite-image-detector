@@ -189,7 +189,7 @@ def overlay_preview(image_path: Path, mask, out_path: Path, alpha=0.45):
     with Image.open(image_path).convert("RGB") as im:
         im=im.copy().convert("RGBA")
         a=(mask.astype(np.uint8)*int(255*alpha)).astype(np.uint8)
-        red=Image.new("RGBA",im.size,(255,0,0,0)); red.putalpha(Image.fromarray(a,"L"))
+        red=Image.new("RGBA",im.size,(255,0,0,0)); red.putalpha(Image.fromarray(a))
         Image.alpha_composite(im,red).convert("RGB").save(out_path)
 
 # ----------------------------- MAIN -----------------------------

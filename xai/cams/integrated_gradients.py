@@ -178,39 +178,6 @@ class YoloIGScalar(torch.nn.Module):
         topk_vals, _ = torch.topk(scores, k=k, dim=1)
         scalar = topk_vals.mean(dim=1).sum()  # 0-dim scalar
         return scalar.unsqueeze(0)            # <-- make it shape [1]
-        out = self.model(x, augment=False, visualize=False)
-        pred = out[0] if isinstance(out, (list, tuple)) else out
-
-        if pred.ndim == 2:   # [N, 5+nc]
-            pred = pred.unsqueeze(0)
-        if pred.ndim != 3 or pred.shape[-1] < 5:
-            raise RuntimeError(f"Model forward returned unexpected shape: {tuple(pred.shape)}")
-
-        obj = torch.sigmoid(pred[..., 4])   # [B,N]
-        Cdim = pred.shape[-1] - 5
-        if Cdim > 0:
-            cls_logits = pred[..., 5:]      # [B,N,NC]
-            cls_prob = torch.sigmoid(cls_logits)
-            if self.target_class is not None and self.target_class >= 0:
-                if self.target_class >= Cdim:
-                    raise ValueError(f"--target_class={self.target_class} out of range [0,{Cdim-1}]")
-                cls_sel = cls_prob[..., self.target_class]  # [B,N]
-            else:
-                cls_sel, _ = cls_prob.max(dim=-1)          # [B,N]
-        else:
-            # Model without class dimension (unlikely); treat as 1
-            cls_sel = torch.ones_like(obj)
-
-        scores = obj * cls_sel  # [B,N]
-        N = scores.shape[1]
-        if N == 0:
-            # no anchors?
-            return (scores.sum() * 0.0)  # scalar 0 with grad
-
-        k = max(1, min(self.topk, N))
-        topk_vals, _ = torch.topk(scores, k=k, dim=1)
-        scalar = topk_vals.mean(dim=1)      # [B]
-        return scalar.sum()                  # scalar
 
 
 def main():
@@ -252,7 +219,16 @@ def main():
     _ensure_dir_writable(out_npy)
 
     # Device + model
-    device = select_device('0' if (args.device.lower() in {"auto", ""} and torch.cuda.is_available()) else args.device)
+    if args.device.lower() in {"auto", ""}:
+        if torch.cuda.is_available():
+            device_str = "0"
+        elif torch.backends.mps.is_available():
+            device_str = "mps"
+        else:
+            device_str = "cpu"
+    else:
+        device_str = args.device
+    device = select_device(device_str)
     print_kv("device", device)
 
     model = DetectMultiBackend(str(weights_p), device=device, dnn=False, data=None, fp16=False)

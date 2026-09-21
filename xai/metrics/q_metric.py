@@ -224,55 +224,6 @@ def _parse_box_line(line, W, H):
 
     return (None, None)
 
-    """
-    Parse a single line into (x1,y1,x2,y2, conf) in pixels.
-    Accepts:
-      - plain pixels:            x1 y1 x2 y2 [conf]
-      - pixels with class:       cls x1 y1 x2 y2 [conf]
-      - YOLO normalized (rel):   [cls] cx cy w h [conf]  (0..1)
-    Return (box, conf_or_None) or (None, None).
-    """
-    s = line.strip()
-    if not s or s.startswith("#"):
-        return (None, None)
-    toks = s.replace(",", " ").split()
-    if len(toks) < 4:
-        return (None, None)
-
-    def is_rel(vals):
-        try:
-            vs = [float(v) for v in vals]
-            return all(0.0 <= v <= 1.0 for v in vs)
-        except Exception:
-            return False
-
-    # Case 1: x1 y1 x2 y2 [conf] (not all 0..1)
-    if len(toks) >= 4 and all(_is_number(t) for t in toks[:4]) and not is_rel(toks[:4]):
-        x1,y1,x2,y2 = toks[:4]
-        conf = float(toks[4]) if len(toks) >= 5 and _is_number(toks[4]) else None
-        return (_as_int_box(x1,y1,x2,y2), conf)
-
-    # Case 2: cls x1 y1 x2 y2 [conf] (not all 0..1)
-    if len(toks) >= 5 and all(_is_number(t) for t in toks[1:5]) and not is_rel(toks[1:5]):
-        x1,y1,x2,y2 = toks[1:5]
-        conf = float(toks[5]) if len(toks) >= 6 and _is_number(toks[5]) else None
-        return (_as_int_box(x1,y1,x2,y2), conf)
-
-    # Case 3: YOLO normalized
-    # 3a) cx cy w h [conf]
-    if len(toks) >= 4 and is_rel(toks[:4]):
-        cx,cy,w,h = toks[:4]
-        conf = float(toks[4]) if len(toks) >= 5 and _is_number(toks[4]) else None
-        return (_xywh_rel_to_xyxy_px(cx,cy,w,h,W,H), conf)
-
-    # 3b) cls cx cy w h [conf]
-    if len(toks) >= 5 and is_rel(toks[1:5]):
-        cx,cy,w,h = toks[1:5]
-        conf = float(toks[5]) if len(toks) >= 6 and _is_number(toks[5]) else None
-        return (_xywh_rel_to_xyxy_px(cx,cy,w,h,W,H), conf)
-
-    return (None, None)
-
 # -------------- Box readers (file or directory) --------------
 
 def is_dir_or_file(p):
@@ -428,7 +379,9 @@ def trapezoid_auc(xs, ys):
     ys = np.asarray(ys, dtype=np.float64)
     order = np.argsort(xs)
     xs, ys = xs[order], ys[order]
-    return float(np.trapz(ys, xs)) / (xs[-1] - xs[0] + 1e-12)
+    # np.trapz was renamed np.trapezoid in NumPy 2.0; support both.
+    trapz = getattr(np, "trapezoid", np.trapz)
+    return float(trapz(ys, xs)) / (xs[-1] - xs[0] + 1e-12)
 
 # -------------- Main --------------
 
