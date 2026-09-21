@@ -44,10 +44,10 @@ except Exception as e:
 
 # ========= CONFIG (edit for your Mac paths if needed) =========
 # Use expanduser so "~" works on macOS home folders
-WEIGHTS     = Path("weights.pt").expanduser()
-IMAGES_DIR  = Path("data/images").expanduser()
-OUTPUTS_DIR = Path("data/eigencam").expanduser()
-LABELS_DIR  = Path("data/labels").expanduser()
+WEIGHTS     = ROOT / "weights.pt"
+IMAGES_DIR  = ROOT / "data" / "images"
+OUTPUTS_DIR = ROOT / "data" / "eigencam"
+LABELS_DIR  = ROOT / "data" / "labels"
 
 IMG_SIZE   = (1024, 1024)
 CONF_T     = 0.25
@@ -251,7 +251,7 @@ def _run_loop(dmb, cam, images_root, out_root, labels_root, imgsz, stride, names
         if cam is not None:
             inp_cam = _prepare_tensor_bgr(im0, tuple(imgsz), stride, dmb.device)
             with torch.no_grad():
-                grayscale_cam = cam(input_tensor=inp_cam, eigen_smooth=True)[0]
+                grayscale_cam = cam(input_tensor=inp_cam, targets=None, eigen_smooth=True)[0]
             cam_resized = cv2.resize(grayscale_cam, (im0.shape[1], im0.shape[0]))
             canvas = _overlay_cam_on_bgr(canvas, cam_resized)
 

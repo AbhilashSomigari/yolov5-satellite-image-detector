@@ -44,10 +44,10 @@ print(f"[VERSIONS] python={sys.version.split()[0]} torch={torch.__version__} cv2
 # =========================
 # =======  CONFIG  ========
 # =========================
-WEIGHTS       = Path("weights.pt").expanduser()
-IMAGES_DIR    = Path("data/images").expanduser()            # input images root
-OUTPUTS_DIR   = Path("data/gradcam").expanduser()           # colored overlays (visuals)
-VALUES_DIR    = Path("data/grad_pixelvalues").expanduser()  # numeric arrays + masks
+WEIGHTS       = ROOT / "weights.pt"
+IMAGES_DIR    = ROOT / "data" / "images"                    # input images root
+OUTPUTS_DIR   = ROOT / "data" / "gradcam"                   # colored overlays (visuals)
+VALUES_DIR    = ROOT / "data" / "grad_pixelvalues"          # numeric arrays + masks
 
 IMG_SIZE      = (1024, 1024)
 CONF_T        = 0.25

@@ -46,11 +46,11 @@ except Exception as e:
     _HAS_CAM = False
 
 # ========= CONFIG =========
-WEIGHTS       = Path("weights.pt").expanduser()
-IMAGES_DIR    = Path("data/images").expanduser()
-OUTPUTS_DIR   = Path("data/eigencam").expanduser()            # overlays
-VALUES_DIR    = Path("data/eigencam_values").expanduser()     # numeric + masks
-LABELS_DIR    = Path("data/labels").expanduser()              # optional (YOLO txt)
+WEIGHTS       = ROOT / "weights.pt"
+IMAGES_DIR    = ROOT / "data" / "images"
+OUTPUTS_DIR   = ROOT / "data" / "eigencam"                    # overlays
+VALUES_DIR    = ROOT / "data" / "eigencam_values"             # numeric + masks
+LABELS_DIR    = ROOT / "data" / "labels"                      # optional (YOLO txt)
 
 IMG_SIZE      = (1024, 1024)
 CONF_T        = 0.25
@@ -363,7 +363,7 @@ def _run_loop(dmb, cam, images_root, out_root, values_root, labels_root, imgsz, 
             inp_cam = _prepare_tensor_bgr(im0, tuple(imgsz), stride, dmb.device)
             with torch.no_grad():
                 # EigenCAM returns (B, Hc, Wc); we take [0]
-                grayscale_cam = cam(input_tensor=inp_cam, eigen_smooth=True)[0]
+                grayscale_cam = cam(input_tensor=inp_cam, targets=None, eigen_smooth=True)[0]
             # Use NEAREST to preserve peak values (avoid dull smoothing)
             eigen_resized = cv2.resize(grayscale_cam, (im0.shape[1], im0.shape[0]), interpolation=cv2.INTER_NEAREST)
             eigen_resized = np.clip(eigen_resized, 0.0, 1.0)

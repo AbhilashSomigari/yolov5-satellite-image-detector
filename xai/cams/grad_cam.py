@@ -39,10 +39,10 @@ from pytorch_grad_cam.utils.image import show_cam_on_image
 print("[BOOT] xai/cams/grad_cam.py (Grad-CAM only)")
 print(f"[VERSIONS] python={sys.version.split()[0]} torch={torch.__version__} cv2={cv2.__version__}")
 
-# ==== CONFIG (edit for your Mac user) ====
-WEIGHTS     = Path("weights.pt").expanduser()
-IMAGES_DIR  = Path("data/images").expanduser()
-OUTPUTS_DIR = Path("data/gradcam").expanduser()     # root for outputs
+# ==== CONFIG (paths are relative to the repo root; override with your own if needed) ====
+WEIGHTS     = ROOT / "weights.pt"
+IMAGES_DIR  = ROOT / "data" / "images"
+OUTPUTS_DIR = ROOT / "data" / "gradcam"             # root for outputs
 IMG_SIZE    = (1024, 1024)
 CONF_T      = 0.25
 IOU_T       = 0.45
